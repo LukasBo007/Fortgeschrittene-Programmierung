@@ -7,7 +7,4 @@ def f(a, b=42):
  time.sleep(2) # Warte 2 Sekunden
  print(a, b)
 
-<<<<<<< HEAD
-=======
 ##Hallo 123
->>>>>>> 01e759cb3c58150b33b63ad98d351e4c60177ce0
