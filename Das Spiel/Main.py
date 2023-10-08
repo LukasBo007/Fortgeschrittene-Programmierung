@@ -10,7 +10,11 @@ import pygame
 pygame.init()
 
 #Screen
-screen = pygame.display.set_mode([400, 800])
+screen = pygame.display.set_mode([700,1000])
+#Hintergrundbild
+bg = pygame.image.load
+
+pygame.mouse.set_visible(0)
 
 # Run 
 running = True
