@@ -10,9 +10,10 @@ import pygame
 pygame.init()
 
 #Screen
-screen = pygame.display.set_mode([700,1000])
+screen = pygame.display.set_mode([915,515])
 #Hintergrundbild
-bg = pygame.image.load
+
+background = pygame.image.load("images/Sample.png")
 
 pygame.mouse.set_visible(0)
 
@@ -20,11 +21,14 @@ pygame.mouse.set_visible(0)
 running = True
 while running:
 
+    screen.fill((0,0,0))
+    screen.blit(background,(0,0))
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-    screen.fill((43, 51, 64))
+    
 
     pygame.draw.circle(screen, (204, 188, 122), (200, 400), 100)
 
