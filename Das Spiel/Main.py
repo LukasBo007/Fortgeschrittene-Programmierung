@@ -12,8 +12,12 @@ pygame.init()
 #Screen
 screen = pygame.display.set_mode([915,515])
 #Hintergrundbild
+background = pygame.image.load("images/Background.jpg")
 
-background = pygame.image.load("images/Sample.png")
+#Anpassen vom Hintergrund an die Größe des Fensters
+background = pygame.transform.scale(background, (915,515))
+
+
 
 pygame.mouse.set_visible(0)
 
