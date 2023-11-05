@@ -6,8 +6,11 @@ import pygame
 pygame.init()
 
 # Screen Size
-screen_size = (500, 1000)
+screen_size =width, height=(500, 1000)
 screen = pygame.display.set_mode(screen_size)
+
+#Variable für bewegenden Hintergrund
+i= 0
 
 # Hintergrundbild laden
 background = pygame.image.load("Images\space2.jpg").convert()
@@ -26,8 +29,14 @@ while running:
         if event.type == pygame.QUIT:
             running = False
     
-    # Hintergrundbild zeichnen
-    screen.blit(background, (0, 0))
+    # Hintergrundbild zeichnen + bewegen
+    screen.blit(background, (0, i))
+    screen.blit(background, (0,height+i))
+    i -= 1
+    if i == -height:
+       screen.blit(background, ( 0,height+i))
+       i= 0
+
 
     # Update ball position
     ball_position[0] += ball_speed[0]
@@ -46,6 +55,8 @@ while running:
     # Untere Wand
     pygame.draw.line(screen, (255, 255, 255), (0, screen_size[1] - 150), (screen_size[0], screen_size[1] - 150), 2)
     #screen.fill((63, 71, 84), (0, screen_size[1] - 149, screen_size[0], 149))
+
+    #Bewegender Hintergrund
 
     # Update Display
     pygame.display.flip()
