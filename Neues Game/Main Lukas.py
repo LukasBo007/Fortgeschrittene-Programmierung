@@ -1,7 +1,6 @@
 import random
 import pygame
 
-
 # Initialisierung
 pygame.init()
 
@@ -9,8 +8,9 @@ pygame.init()
 screen_size = (500, 1000)
 screen = pygame.display.set_mode(screen_size)
 
-# Highscore
+# Highscore und Leben
 highscore = 0
+lives = 3 # Startanzahl der Leben
 font = pygame.font.Font(None, 30)  # Schriftart und Größe für den Text
 
 # Hintergrundbild laden
@@ -35,16 +35,12 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and not rocket_fired:
-            # Wenn Maustaste 1 (links) gedrückt wird, keine Rakete abgefeuert wurde und die Y-Position der Rakete unterhalb der Linie liegt
-            rocket_position = list(pygame.mouse.get_pos())  # Mausposition abrufen
-            if rocket_position[1] > screen_size[1] - 150:  # Überprüfen, ob die Rakete unterhalb der Linie ist
+            rocket_position = list(pygame.mouse.get_pos())
+            if rocket_position[1] > screen_size[1] - 150:
                 rockets.append(rocket_position)
-                rocket_fired = True  # Rakete wurde abgefeuert
-                # Ballgeschwindigkeit erhöhen, wenn die Rakete abgefeuert wird
-                ball_speed[0] *= 1.15  # Erhöhe die x-Geschwindigkeit des Balls um 15%
-                ball_speed[1] *= 1.15  # Erhöhe die y-Geschwindigkeit des Balls um 15%
-        
-        
+                rocket_fired = True
+                ball_speed[0] *= 1.15
+                ball_speed[1] *= 1.15
 
     # Hintergrundbild zeichnen
     screen.blit(background, (0, 0))
@@ -66,23 +62,28 @@ while running:
     # Draw Rockets
     for rocket in rockets:
         screen.blit(rocket_image, (rocket[0], rocket[1]))
-        rocket[1] -= 10  # Geschwindigkeit der Rakete nach oben
+        rocket[1] -= 10
         if rocket[1] < 0:
             rockets.remove(rocket)
             rocket_fired = False
+            lives -= 1  # Reduziere die Anzahl der Leben, wenn eine Rakete den Bildschirm verlässt
+            if lives == 0:
+                running = False  # Spiel beenden, wenn alle Leben verloren sind
         else:
-            # Kollisionserkennung mit dem Ball
             rocket_rect = pygame.Rect(rocket[0], rocket[1], rocket_image.get_width(), rocket_image.get_height())
             ball_rect = pygame.Rect(ball_position[0] - ball_radius, ball_position[1] - ball_radius, ball_radius * 2, ball_radius * 2)
             if rocket_rect.colliderect(ball_rect):
                 rockets.remove(rocket)
                 rocket_fired = False
-                highscore += 1  # Erhöhe den Highscore, wenn die Rakete den Ball trifft
+                highscore += 1
 
-    
     # Zeichne Highscore oben rechts
     highscore_text = font.render("Punkte: " + str(highscore), True, (255, 255, 255))
     screen.blit(highscore_text, (screen_size[0] - highscore_text.get_width() - 10, 10))
+
+    # Zeichne verbleibende Leben oben links
+    lives_text = font.render("Leben: " + str(lives), True, (255, 255, 255))
+    screen.blit(lives_text, (10, 10))
 
     # Untere Wand
     pygame.draw.line(screen, (255, 255, 255), (0, screen_size[1] - 150), (screen_size[0], screen_size[1] - 150), 2)
@@ -95,6 +96,16 @@ while running:
 
     # Titel
     pygame.display.set_caption("Defenders of Planet Earth")
+
+    #Game Over
+    if lives == 0:
+        font_game_over = pygame.font.Font(None, 80)
+        game_over_text = font_game_over.render("Game Over", True, (255, 51, 51))
+        screen.blit(game_over_text, ((screen_size[0] - game_over_text.get_width()) // 2, (screen_size[1] - game_over_text.get_height()) // 2))
+        pygame.display.flip()
+        pygame.time.wait(5000)  
+        running = False  
+
     
 # Quit
 pygame.quit()
