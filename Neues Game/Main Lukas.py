@@ -28,6 +28,14 @@ rocket_fired = False
 rocket_image = pygame.image.load("Images\Missiles\spaceMissiles_006.png")  # Passe den Dateipfad entsprechend an
 rocket_image = pygame.transform.scale(rocket_image, (20, 40))  # Passe die Größe des Bildes an
 
+def setup_game():
+    global highscore, lives, ball_position, ball_speed, rockets
+    highscore = 0
+    lives = 3
+    ball_position = [200, 400]
+    ball_speed = [3, 3]
+    rockets = []
+
 running = True
 while running:
     # Hauptteil
@@ -81,6 +89,10 @@ while running:
     highscore_text = font.render("Punkte: " + str(highscore), True, (255, 255, 255))
     screen.blit(highscore_text, (screen_size[0] - highscore_text.get_width() - 10, 10))
 
+    # Zeichne Overall_Highscore oben rechts
+    overall_highscore_text = font.render("Highscore: " + str(highscore), True, (255, 255, 255))
+    screen.blit(overall_highscore_text, (screen_size[0] - overall_highscore_text.get_width() - 10, 28))
+
     # Zeichne verbleibende Leben oben links
     lives_text = font.render("Leben: " + str(lives), True, (255, 255, 255))
     screen.blit(lives_text, (10, 10))
@@ -103,9 +115,30 @@ while running:
         game_over_text = font_game_over.render("Game Over", True, (255, 51, 51))
         screen.blit(game_over_text, ((screen_size[0] - game_over_text.get_width()) // 2, (screen_size[1] - game_over_text.get_height()) // 2))
         pygame.display.flip()
-        pygame.time.wait(5000)  
+        pygame.time.wait(1500)  
         running = False  
 
+        # Zeichne Restart-Button
+        restart_button_rect = pygame.Rect((screen_size[0] - 200) // 2, (screen_size[1] + game_over_text.get_height()) // 2 + 20, 200, 50)
+        pygame.draw.rect(screen, (255, 255, 204), restart_button_rect)
+        restart_text = font.render("Restart", True, (255, 51, 51))
+        screen.blit(restart_text, (restart_button_rect.centerx - restart_text.get_width() // 2, restart_button_rect.centery - restart_text.get_height() // 2))
+
+        pygame.display.flip()
+
+        # Warte auf Mausklick für Restart
+        restart_clicked = False
+        while not restart_clicked:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                    restart_clicked = True
+                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    mouse_pos = pygame.mouse.get_pos()
+                    if restart_button_rect.collidepoint(mouse_pos):
+                        setup_game()
+                        running = True
+                        restart_clicked = True
     
 # Quit
 pygame.quit()
